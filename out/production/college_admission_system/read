@@ -1,0 +1,167 @@
+完整项目结构 包路径
+college-admission-system/
+│
+├── src/
+│   │
+│   ├── Main.java                          # 程序入口（启动类）
+│   │
+│   ├── view/                              # View层 - cmd命令行界面
+│   │   ├── LoginView.java
+│   │   ├── StudentView.java
+│   │   ├── AdminView.java
+│   │   └── SuperAdminView.java
+│   │
+│   ├── service/                           # Service层 - 业务逻辑
+│   │   ├── auth/
+│   │   │   └── AuthService.java           # 登录认证
+│   │   ├── school/
+│   │   │   ├── SchoolQueryService.java    # 学校查询（所有角色）
+│   │   │   └── SchoolManageService.java   # 学校管理（管理员/超管）
+│   │   ├── student/
+│   │   │   ├── StudentQueryService.java   # 学生查询（所有角色）
+│   │   │   └── ScoreManageService.java    # 成绩管理（仅超管）
+│   │   ├── application/
+│   │   │   └── ApplicationService.java    # 报考管理（学生）
+│   │   └── user/
+│   │       └── UserManageService.java     # 用户管理（仅超管）
+│   │
+│   ├── dao/                               # DAO层 - 数据访问
+│   │   ├── BaseDAO.java                   # 通用CRUD（老师提供）
+│   │   ├── StudentDAO.java
+│   │   ├── UserDAO.java
+│   │   ├── SchoolDAO.java
+│   │   └── ApplicationDAO.java
+│   │
+│   ├── DBUtil/                            # 数据库工具（老师提供）
+│   │   └── DBUtil.java                    # 连接管理、事务控制
+│   │
+│   ├── entity/                            # Entity层 - 实体类
+│   │   ├── User.java
+│   │   ├── Student.java
+│   │   ├── School.java
+│   │   └── Application.java
+│   │
+│   ├── vo/                                # VO层 - 视图对象
+│   │   ├── StudentInfoVO.java
+│   │   ├── SchoolDetailVO.java
+│   │   ├── MyApplicationVO.java
+│   │   └── SchoolStatisticsVO.java
+│   │
+│   ├── exception/                         # 自定义异常
+│   │   ├── BusinessException.java
+│   │   └── PermissionDeniedException.java
+│   │
+│   └── utils/                             # 工具类
+│       ├── InputUtil.java                 # 键盘输入封装
+│       └── PrintUtil.java                 # 表格/格式化输出
+│
+├── lib/                                   # 第三方JAR包
+│   └── mysql-connector-java-5.1.47.jar
+│
+├── database/                              # 数据库脚本
+│   └── schema.sql
+│
+├── .vscode/                               # VS Code配置
+│   └── settings.json
+│
+└── README.md                              # 项目说明
+
+
+
+
+
+依赖关系
+Main.java
+    │
+    └── view/LoginView.java
+            │
+            ├── service/auth/AuthService.java
+            │       │
+            │       └── dao/UserDAO.java
+            │
+            └── (根据角色跳转)
+                    │
+                    ├── view/StudentView.java
+                    │       ├── service/school/SchoolQueryService.java
+                    │       ├── service/application/ApplicationService.java
+                    │       └── service/student/StudentQueryService.java
+                    │
+                    ├── view/AdminView.java
+                    │       ├── service/school/SchoolManageService.java
+                    │       └── service/application/ApplicationService.java
+                    │
+                    └── view/SuperAdminView.java
+                            ├── service/school/SchoolManageService.java
+                            ├── service/student/ScoreManageService.java
+                            └── service/user/UserManageService.java
+
+DAO层依赖关系
+BaseDAO
+   │
+   ├── UserDAO
+   │
+   ├── StudentDAO
+   │
+   ├── SchoolDAO
+   │
+   └── ApplicationDAO
+
+ervice层依赖关系
+View层
+   │
+   ├── AuthService
+   │       ├── UserDAO
+   │       └── StudentDAO
+   │
+   ├── SchoolQueryService
+   │       ├── SchoolDAO
+   │       └── ApplicationDAO
+   │
+   ├── SchoolManageService
+   │       ├── SchoolDAO
+   │       └── ApplicationDAO
+   │
+   ├── StudentQueryService
+   │       ├── StudentDAO
+   │       └── ApplicationDAO
+   │
+   ├── ScoreManageService
+   │       ├── StudentDAO
+   │       └── ApplicationDAO
+   │
+   ├── ApplicationService
+   │       ├── ApplicationDAO
+   │       ├── SchoolDAO
+   │       └── StudentDAO
+   │
+   └── UserManageService
+           ├── UserDAO
+           └── StudentDAO
+
+  View层依赖关系
+  Main.java
+      │
+      └── LoginView
+              │
+              ├── AuthService（登录/注册）
+              │
+              └── 按角色跳转
+                      │
+                      ├── StudentView
+                      │       ├── SchoolQueryService
+                      │       ├── StudentQueryService
+                      │       └── ApplicationService
+                      │
+                      ├── AdminView
+                      │       ├── SchoolQueryService
+                      │       ├── SchoolManageService
+                      │       ├── StudentQueryService
+                      │       └── ApplicationService
+                      │
+                      └── SuperAdminView
+                              ├── SchoolQueryService
+                              ├── SchoolManageService
+                              ├── StudentQueryService
+                              ├── ScoreManageService
+                              ├── ApplicationService
+                              └── UserManageService
